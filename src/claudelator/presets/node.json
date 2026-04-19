@@ -1,0 +1,19 @@
+{
+  "sandbox": {
+    "filesystem": {
+      "allowWrite": [
+        "~/.npm",
+        "~/.cache/node",
+        "~/.cache/yarn",
+        "~/.cache/pnpm",
+        "~/.local/share/pnpm"
+      ]
+    },
+    "network": {
+      "allowedDomains": [
+        "registry.npmjs.org",
+        "registry.yarnpkg.com"
+      ]
+    }
+  }
+}
