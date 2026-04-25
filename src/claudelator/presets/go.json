@@ -1,0 +1,17 @@
+{
+  "sandbox": {
+    "filesystem": {
+      "allowWrite": [
+        "~/.cache/go-build",
+        "~/go/pkg/mod"
+      ]
+    },
+    "network": {
+      "allowedDomains": [
+        "proxy.golang.org",
+        "sum.golang.org",
+        "go.dev"
+      ]
+    }
+  }
+}

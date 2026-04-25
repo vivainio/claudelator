@@ -4,7 +4,9 @@
       "allowWrite": [
         "~/.cache/uv",
         "~/.local/share/uv",
-        "~/.local/bin"
+        "~/.local/bin",
+        "~/.cache/pip",
+        "~/.cache/black"
       ]
     },
     "network": {

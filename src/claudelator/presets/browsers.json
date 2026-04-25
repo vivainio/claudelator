@@ -1,0 +1,17 @@
+{
+  "sandbox": {
+    "filesystem": {
+      "allowWrite": [
+        "~/.cache/ms-playwright",
+        "~/.cache/puppeteer"
+      ]
+    },
+    "network": {
+      "allowedDomains": [
+        "playwright.azureedge.net",
+        "playwright.download.prss.microsoft.com",
+        "storage.googleapis.com"
+      ]
+    }
+  }
+}

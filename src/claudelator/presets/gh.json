@@ -1,0 +1,18 @@
+{
+  "sandbox": {
+    "filesystem": {
+      "allowWrite": [
+        "~/.cache/gh"
+      ]
+    },
+    "network": {
+      "allowedDomains": [
+        "api.github.com",
+        "github.com",
+        "objects.githubusercontent.com",
+        "uploads.github.com",
+        "codeload.github.com"
+      ]
+    }
+  }
+}

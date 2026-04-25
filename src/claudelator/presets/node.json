@@ -6,7 +6,9 @@
         "~/.cache/node",
         "~/.cache/yarn",
         "~/.cache/pnpm",
-        "~/.local/share/pnpm"
+        "~/.local/share/pnpm",
+        "~/.cache/node-gyp",
+        "~/.cache/biome"
       ]
     },
     "network": {
