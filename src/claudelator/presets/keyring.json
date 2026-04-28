@@ -1,0 +1,10 @@
+{
+  "sandbox": {
+    "filesystem": {
+      "allowWrite": [
+        "/run/user/$UID/bus",
+        "~/.local/share/keyrings"
+      ]
+    }
+  }
+}

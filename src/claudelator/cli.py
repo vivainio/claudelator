@@ -27,11 +27,32 @@ def preset_paths() -> dict[str, Path]:
     return found
 
 
+def _expand_env(obj):
+    if isinstance(obj, str):
+        return os.path.expandvars(obj)
+    if isinstance(obj, list):
+        return [_expand_env(x) for x in obj]
+    if isinstance(obj, dict):
+        return {k: _expand_env(v) for k, v in obj.items()}
+    return obj
+
+
 def load_preset(name: str) -> dict:
     presets = preset_paths()
     if name not in presets:
         sys.exit(f"unknown preset: {name} (available: {', '.join(sorted(presets)) or 'none'})")
-    return json.loads(presets[name].read_text())
+    env = {**os.environ, "UID": str(os.getuid())}
+    raw = presets[name].read_text()
+    # Use a temporary environ override for $UID expansion
+    old_uid = os.environ.get("UID")
+    os.environ["UID"] = env["UID"]
+    try:
+        return _expand_env(json.loads(raw))
+    finally:
+        if old_uid is None:
+            os.environ.pop("UID", None)
+        else:
+            os.environ["UID"] = old_uid
 
 
 def settings_path(args) -> Path:
