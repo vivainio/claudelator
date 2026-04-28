@@ -1,0 +1,16 @@
+{
+  "sandbox": {
+    "filesystem": {
+      "allowWrite": [
+        "~/.aws/sso/cache",
+        "~/.aws/cli/cache"
+      ]
+    },
+    "network": {
+      "allowedDomains": [
+        "*.amazonaws.com",
+        "*.awsstatic.com"
+      ]
+    }
+  }
+}
