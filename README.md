@@ -50,6 +50,7 @@ Default scope is **global** (`~/.claude/settings.json`). Use `--local` or `--pro
 - `uv` — write access to the uv cache; allows `pypi.org`, `files.pythonhosted.org`
 - `node` — write access to npm/yarn/pnpm caches; allows their registries
 - `aws` — write access to AWS SSO/CLI cache; allows AWS API domains
+- `zaira` — runs `zaira` outside the sandbox so its `wincred.exe` subprocess can reach Windows Credential Manager via the WSL interop socket (which the sandbox blocks). Requires a Claude Code restart after applying.
 
 ## Custom presets
 
