@@ -1,7 +1,0 @@
-{
-  "sandbox": {
-    "excludedCommands": [
-      "wincred.exe"
-    ]
-  }
-}
