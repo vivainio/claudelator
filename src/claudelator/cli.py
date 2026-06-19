@@ -37,15 +37,9 @@ def _expand_env(obj):
     return obj
 
 
-def load_preset(name: str) -> dict:
-    presets = preset_paths()
-    if name not in presets:
-        sys.exit(f"unknown preset: {name} (available: {', '.join(sorted(presets)) or 'none'})")
-    env = {**os.environ, "UID": str(os.getuid())}
-    raw = presets[name].read_text()
-    # Use a temporary environ override for $UID expansion
+def _load_json_with_env(raw: str) -> dict:
     old_uid = os.environ.get("UID")
-    os.environ["UID"] = env["UID"]
+    os.environ["UID"] = str(os.getuid())
     try:
         return _expand_env(json.loads(raw))
     finally:
@@ -53,6 +47,28 @@ def load_preset(name: str) -> dict:
             os.environ.pop("UID", None)
         else:
             os.environ["UID"] = old_uid
+
+
+def load_preset(name: str) -> dict:
+    presets = preset_paths()
+    if name not in presets:
+        sys.exit(f"unknown preset: {name} (available: {', '.join(sorted(presets)) or 'none'})")
+    return _load_json_with_env(presets[name].read_text())
+
+
+def load_file(path: str) -> dict:
+    p = Path(path).expanduser()
+    if not p.is_file():
+        sys.exit(f"file not found: {path}")
+    return _load_json_with_env(p.read_text())
+
+
+def collect_sources(args) -> list[dict]:
+    sources = [load_preset(n) for n in getattr(args, "names", []) or []]
+    sources += [load_file(f) for f in getattr(args, "file", []) or []]
+    if not sources:
+        sys.exit("no presets or --file sources given")
+    return sources
 
 
 def settings_path(args) -> Path:
@@ -98,8 +114,8 @@ def cmd_diff(args):
     path = settings_path(args)
     existing = load_settings(path)
     merged = existing
-    for name in args.names:
-        merged = merge(merged, load_preset(name), force=args.force)
+    for src in collect_sources(args):
+        merged = merge(merged, src, force=args.force)
     before = json.dumps(existing, indent=2, sort_keys=True).splitlines()
     after = json.dumps(merged, indent=2, sort_keys=True).splitlines()
     import difflib
@@ -130,8 +146,8 @@ def cmd_apply(args):
     path = settings_path(args)
     existing = load_settings(path)
     merged = existing
-    for name in args.names:
-        merged = merge(merged, load_preset(name), force=args.force)
+    for src in collect_sources(args):
+        merged = merge(merged, src, force=args.force)
     if merged == existing:
         print(f"{path}: no changes")
         return
@@ -154,9 +170,13 @@ def main(argv=None):
 
     sp = sub.add_parser("list"); sp.set_defaults(func=cmd_list)
     sp = sub.add_parser("show"); sp.add_argument("name"); sp.set_defaults(func=cmd_show)
-    sp = sub.add_parser("apply"); sp.add_argument("names", nargs="+"); add_scope(sp)
+    sp = sub.add_parser("apply"); sp.add_argument("names", nargs="*")
+    sp.add_argument("--file", action="append", default=[], help="merge JSON from arbitrary path (repeatable)")
+    add_scope(sp)
     sp.add_argument("--dry-run", action="store_true"); sp.set_defaults(func=cmd_apply)
-    sp = sub.add_parser("diff"); sp.add_argument("names", nargs="+"); add_scope(sp); sp.set_defaults(func=cmd_diff)
+    sp = sub.add_parser("diff"); sp.add_argument("names", nargs="*")
+    sp.add_argument("--file", action="append", default=[], help="diff JSON from arbitrary path (repeatable)")
+    add_scope(sp); sp.set_defaults(func=cmd_diff)
     sp = sub.add_parser("sandbox", help="add path(s) to sandbox filesystem whitelist")
     sp.add_argument("paths", nargs="+")
     sp.add_argument("--read", action="store_true", help="add to allowRead instead of allowWrite")

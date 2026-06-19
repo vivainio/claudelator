@@ -29,6 +29,9 @@ claudelator apply base uv --local     # ./.claude/settings.local.json
 claudelator apply base uv --project   # ./.claude/settings.json
 claudelator apply base uv --dry-run   # print result without writing
 
+claudelator apply --file /tmp/managed-settings.json        # merge an arbitrary JSON file
+claudelator diff base --file /tmp/managed-settings.json    # mix presets and --file (repeatable)
+
 claudelator sandbox .                 # add cwd to sandbox allowWrite
 claudelator sandbox ~/work /tmp/foo   # multiple paths
 claudelator sandbox . --read          # add to allowRead instead

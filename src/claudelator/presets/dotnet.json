@@ -1,0 +1,21 @@
+{
+  "sandbox": {
+    "filesystem": {
+      "allowWrite": [
+        "~/.nuget",
+        "~/.local/share/NuGet",
+        "~/.dotnet",
+        "~/.templateengine",
+        "~/.aspnet"
+      ]
+    },
+    "network": {
+      "allowedDomains": [
+        "api.nuget.org",
+        "www.nuget.org",
+        "dotnetcli.azureedge.net",
+        "dotnetbuilds.azureedge.net"
+      ]
+    }
+  }
+}
