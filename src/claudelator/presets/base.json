@@ -3,7 +3,10 @@
     "enabled": true,
     "autoAllowBashIfSandboxed": true,
     "filesystem": {
-      "allowWrite": ["~/.cache/claude"]
+      "allowWrite": ["~/.cache/claude", "~/.cargo", "~/.rustup"]
+    },
+    "network": {
+      "allowedDomains": ["crates.io", "index.crates.io", "static.crates.io", "static.rust-lang.org"]
     }
   }
 }
