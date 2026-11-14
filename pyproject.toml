@@ -1,9 +1,20 @@
 [project]
 name = "claudelator"
-version = "0.1.0"
+version = "0.0.0.dev0"
 description = "Apply preset bundles to Claude Code settings.json"
+readme = "README.md"
 requires-python = ">=3.11"
+authors = [{ name = "Ville Vainio" }]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Environment :: Console",
+]
 dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/vivainio/claudelator"
+Repository = "https://github.com/vivainio/claudelator"
+Issues = "https://github.com/vivainio/claudelator/issues"
 
 [project.scripts]
 claudelator = "claudelator.cli:main"
