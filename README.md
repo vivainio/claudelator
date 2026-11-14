@@ -55,6 +55,19 @@ Default scope is **global** (`~/.claude/settings.json`). Use `--local` or `--pro
 - `aws` — write access to AWS SSO/CLI cache; allows AWS API domains
 - `zaira` — runs `zaira` outside the sandbox so its `wincred.exe` subprocess can reach Windows Credential Manager via the WSL interop socket (which the sandbox blocks). Requires a Claude Code restart after applying.
 
+## Herdr Desktop on WSL
+
+Connect the Windows [Herdr Desktop](https://vivainio.github.io/articles/terminal/herdr-desktop-wsl/) app to `herdr-core` in WSL over SSH to localhost. Run it in your own WSL shell (not inside the Claude Code sandbox, and not with `sudo`):
+
+```bash
+claudelator herdr --dry-run   # preview
+claudelator herdr             # install hc + sshd, create key, authorize it, add `Host wsl`
+claudelator herdr check       # sshd, connections, herdr-core processes, hc ls
+claudelator herdr --lock-down # also disable SSH password login (after testing key login)
+```
+
+It creates `%USERPROFILE%\.ssh\herdr_desktop_ed25519` **without a passphrase**, so keep `/mnt/c/Users/*/.ssh` out of the sandbox's `allowRead`. Afterwards add the machine in the app under Settings -> Machines. Use `--host` and `--port` to change the alias and port.
+
 ## Custom presets
 
 Drop JSON files into `~/.config/claudelator/presets/`. They override packaged presets with the same name.
