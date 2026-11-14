@@ -138,6 +138,22 @@ def setup(args) -> int:
         winkey = _out(["wslpath", "-w", str(key)]) or str(key)
         _run([_winexe("ssh-keygen.exe"), "-t", "ed25519", "-N", "", "-f", winkey, "-C", "herdr-desktop"], dry=dry)
 
+    # 2b. hide the passphrase-less key from the Claude Code sandbox
+    _step(2, "hide the key from the sandbox (denyRead)")
+    from .cli import add_missing, load_settings, write_atomic
+
+    settings = Path.home() / ".claude" / "settings.json"
+    addition = {"sandbox": {"filesystem": {"denyRead": [str(key)]}}}
+    current = load_settings(settings)
+    merged = add_missing(current, addition)
+    if merged == current:
+        _say(f"    ok: {key} already in sandbox.filesystem.denyRead")
+    elif dry:
+        _say(f"    would add {key} to sandbox.filesystem.denyRead in {settings}")
+    else:
+        write_atomic(settings, merged)
+        _say(f"    added {key} to sandbox.filesystem.denyRead in {settings}")
+
     # 3. authorize
     _step(3, "authorize the public key in WSL")
     auth = Path.home() / ".ssh" / "authorized_keys"
@@ -229,8 +245,8 @@ def check(args) -> int:
     profile = _windows_profile()
     if profile and (profile / ".ssh" / KEY_NAME).exists():
         _step(5, "key exposure")
-        _say("    warning: the key has no passphrase. Keep /mnt/c/Users/*/.ssh out of the"
-             " Claude sandbox's allowRead - a readable key plus sshd on localhost is an unsandboxed shell")
+        _say("    warning: the key has no passphrase. It must stay in sandbox.filesystem.denyRead -"
+             " a readable key plus sshd on localhost is an unsandboxed shell")
     return rc
 
 

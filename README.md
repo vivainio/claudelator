@@ -40,4 +40,4 @@ claudelator herdr             # install hc + sshd, create key, authorize it, add
 claudelator herdr check       # sshd, connections, herdr-core processes, hc ls
 ```
 
-It creates `%USERPROFILE%\.ssh\herdr_desktop_ed25519` **without a passphrase**, so keep `/mnt/c/Users/*/.ssh` out of the sandbox's `allowRead`. Password login is only disabled after a key login to localhost succeeds; if that test fails the command stops and leaves it enabled. Afterwards add the machine in the app under Settings -> Machines. Use `--host` and `--port` to change the alias and port.
+It creates `%USERPROFILE%\.ssh\herdr_desktop_ed25519` **without a passphrase**, so setup also adds the key's path to `sandbox.filesystem.denyRead` in `~/.claude/settings.json` (a readable key plus sshd on localhost would be an unsandboxed shell). Password login is only disabled after a key login to localhost succeeds; if that test fails the command stops and leaves it enabled. Afterwards add the machine in the app under Settings -> Machines. Use `--host` and `--port` to change the alias and port.
