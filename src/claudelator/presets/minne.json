@@ -1,9 +1,0 @@
-{
-  "sandbox": {
-    "filesystem": {
-      "allowWrite": [
-        "~/minne/inbox"
-      ]
-    }
-  }
-}

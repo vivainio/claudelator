@@ -184,26 +184,23 @@ def setup(args) -> int:
         cfg.write_text(text + sep + ("\n" if text else "") + block)
         _say(f"    added to {cfg}")
 
-    # 5. lock down
-    if args.lock_down:
-        _step(5, "disable SSH password login")
-        if dry:
-            _say("    would test key login, then set PasswordAuthentication no and restart ssh")
-        else:
-            _say("    testing key login from Windows...")
-            t = subprocess.run([
-                _winexe("ssh.exe"), "-i", _out(["wslpath", "-w", str(key)]) or str(key),
-                "-o", "PasswordAuthentication=no", "-o", "BatchMode=yes", "-o", "StrictHostKeyChecking=accept-new",
-                "-p", str(args.port), f"{wsl_user}@localhost", "true",
-            ])
-            if t.returncode != 0:
-                _say("    key login failed - NOT disabling password login")
-                return 1
-            _run(["sudo", "sed", "-i", r"s/^#\?PasswordAuthentication.*/PasswordAuthentication no/",
-                  "/etc/ssh/sshd_config"], dry=False)
-            _run(["sudo", "service", "ssh", "restart"], dry=False)
+    # 5. lock down (always; only after key login is proven to work)
+    _step(5, "disable SSH password login")
+    if dry:
+        _say("    would test key login, then set PasswordAuthentication no and restart ssh")
     else:
-        _say("\nPassword login left enabled. Re-run with --lock-down after confirming key login works.")
+        _say("    testing key login from Windows...")
+        t = subprocess.run([
+            _winexe("ssh.exe"), "-i", _out(["wslpath", "-w", str(key)]) or str(key),
+            "-o", "PasswordAuthentication=no", "-o", "BatchMode=yes", "-o", "StrictHostKeyChecking=accept-new",
+            "-p", str(args.port), f"{wsl_user}@localhost", "true",
+        ])
+        if t.returncode != 0:
+            _say("    key login failed - NOT disabling password login (fix key login and re-run)")
+            return 1
+        _run(["sudo", "sed", "-i", r"s/^#\?PasswordAuthentication.*/PasswordAuthentication no/",
+              "/etc/ssh/sshd_config"], dry=False)
+        _run(["sudo", "service", "ssh", "restart"], dry=False)
 
     _say(f"\nNext: in Herdr Desktop open Settings -> Machines -> Add machine and pick '{args.host}'."
          "\nThen verify with: claudelator herdr check")

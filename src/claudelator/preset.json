@@ -1,0 +1,73 @@
+{
+  "sandbox": {
+    "filesystem": {
+      "allowWrite": [
+        "~/.aws/sso/cache",
+        "~/.aws/cli/cache",
+        "~/.cache/claude",
+        "~/.cargo",
+        "~/.rustup",
+        "~/.cache/ms-playwright",
+        "~/.cache/puppeteer",
+        "~/.nuget",
+        "~/.local/share/NuGet",
+        "~/.dotnet",
+        "~/.templateengine",
+        "~/.aspnet",
+        "~/.cache/gh",
+        "~/.config/gh",
+        "~/.cache/go-build",
+        "~/go/pkg/mod",
+        "/run/user/$UID/bus",
+        "~/.local/share/keyrings",
+        "~/.npm",
+        "~/.cache/node",
+        "~/.cache/yarn",
+        "~/.cache/pnpm",
+        "~/.local/share/pnpm",
+        "~/.cache/node-gyp",
+        "~/.cache/biome",
+        "~/.cache/uv",
+        "~/.local/share/uv",
+        "~/.local/bin",
+        "~/.cache/pip",
+        "~/.cache/black"
+      ]
+    },
+    "network": {
+      "allowedDomains": [
+        "*.amazonaws.com",
+        "*.awsstatic.com",
+        "crates.io",
+        "index.crates.io",
+        "static.crates.io",
+        "static.rust-lang.org",
+        "playwright.azureedge.net",
+        "playwright.download.prss.microsoft.com",
+        "storage.googleapis.com",
+        "api.nuget.org",
+        "www.nuget.org",
+        "dotnetcli.azureedge.net",
+        "dotnetbuilds.azureedge.net",
+        "api.github.com",
+        "github.com",
+        "objects.githubusercontent.com",
+        "uploads.github.com",
+        "codeload.github.com",
+        "proxy.golang.org",
+        "sum.golang.org",
+        "go.dev",
+        "registry.npmjs.org",
+        "registry.yarnpkg.com",
+        "pypi.org",
+        "files.pythonhosted.org"
+      ]
+    },
+    "enabled": true,
+    "autoAllowBashIfSandboxed": true,
+    "excludedCommands": [
+      "zaira",
+      "zaira *"
+    ]
+  }
+}

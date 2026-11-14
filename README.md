@@ -21,39 +21,13 @@ uv tool install -e .
 ## Usage
 
 ```bash
-claudelator list                      # show available presets
-claudelator show uv                   # print a preset's JSON
-claudelator diff base uv              # preview what apply would change
-claudelator apply base uv             # merge into ~/.claude/settings.json
-claudelator apply base uv --local     # ./.claude/settings.local.json
-claudelator apply base uv --project   # ./.claude/settings.json
-claudelator apply base uv --dry-run   # print result without writing
-
-claudelator apply --file /tmp/managed-settings.json        # merge an arbitrary JSON file
-claudelator diff base --file /tmp/managed-settings.json    # mix presets and --file (repeatable)
-
-claudelator sandbox .                 # add cwd to sandbox allowWrite
-claudelator sandbox ~/work /tmp/foo   # multiple paths
-claudelator sandbox . --read          # add to allowRead instead
-claudelator sandbox . --local         # apply to project-local settings
+claudelator apply             # add the bundled preset to ~/.claude/settings.json
+claudelator apply --local     # ./.claude/settings.local.json
+claudelator apply --project   # ./.claude/settings.json
+claudelator apply --dry-run   # print the resulting settings without writing
 ```
 
-Default scope is **global** (`~/.claude/settings.json`). Use `--local` or `--project` for per-project files.
-
-## Merge semantics
-
-- Dicts are deep-merged.
-- Known array keys (`sandbox.filesystem.allowWrite`, `sandbox.network.allowedDomains`, `permissions.allow`, etc.) are concatenated and deduped.
-- Scalars are preserved if they already exist. Pass `--force` to overwrite.
-- Writes are atomic and create a dated `.bak` backup the first time each day.
-
-## Bundled presets
-
-- `base` — enables the sandbox; write access to `~/.cargo` and `~/.rustup`; allows `crates.io` and `static.rust-lang.org`
-- `uv` — write access to the uv cache; allows `pypi.org`, `files.pythonhosted.org`
-- `node` — write access to npm/yarn/pnpm caches; allows their registries
-- `aws` — write access to AWS SSO/CLI cache; allows AWS API domains
-- `zaira` — runs `zaira` outside the sandbox so its `wincred.exe` subprocess can reach Windows Credential Manager via the WSL interop socket (which the sandbox blocks). Requires a Claude Code restart after applying.
+There is a single preset (`src/claudelator/preset.json`) that enables the sandbox and opens write access and network domains for common toolchains (cargo, uv/pip, npm/yarn/pnpm, dotnet, go, gh, aws, playwright, keyring) and excludes `zaira` from the sandbox. Applying it adds missing list entries (deduped) and keeps any scalar you already set. Writes are atomic with a dated `.bak` backup the first time each day. Default scope is global.
 
 ## Herdr Desktop on WSL
 
@@ -61,30 +35,8 @@ Connect the Windows [Herdr Desktop](https://vivainio.github.io/articles/terminal
 
 ```bash
 claudelator herdr --dry-run   # preview
-claudelator herdr             # install hc + sshd, create key, authorize it, add `Host wsl`
+claudelator herdr             # install hc + sshd, create key, authorize it, add `Host wsl`, disable SSH password login
 claudelator herdr check       # sshd, connections, herdr-core processes, hc ls
-claudelator herdr --lock-down # also disable SSH password login (after testing key login)
 ```
 
-It creates `%USERPROFILE%\.ssh\herdr_desktop_ed25519` **without a passphrase**, so keep `/mnt/c/Users/*/.ssh` out of the sandbox's `allowRead`. Afterwards add the machine in the app under Settings -> Machines. Use `--host` and `--port` to change the alias and port.
-
-## Custom presets
-
-Drop JSON files into `~/.config/claudelator/presets/`. They override packaged presets with the same name.
-
-```json
-{
-  "sandbox": {
-    "filesystem": {
-      "allowWrite": ["~/.cache/my-tool"]
-    },
-    "network": {
-      "allowedDomains": ["example.com"]
-    }
-  }
-}
-```
-
-## License
-
-MIT
+It creates `%USERPROFILE%\.ssh\herdr_desktop_ed25519` **without a passphrase**, so keep `/mnt/c/Users/*/.ssh` out of the sandbox's `allowRead`. Password login is only disabled after a key login to localhost succeeds; if that test fails the command stops and leaves it enabled. Afterwards add the machine in the app under Settings -> Machines. Use `--host` and `--port` to change the alias and port.
