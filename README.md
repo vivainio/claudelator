@@ -1,8 +1,9 @@
 # claudelator
 
-Apply preset bundles to [Claude Code](https://docs.claude.com/claude-code) `settings.json` — sandbox filesystem whitelists, allowed network domains, permissions, and so on.
+Small setup helpers for running [Claude Code](https://docs.claude.com/claude-code) and [Herdr](https://vivainio.github.io/articles/terminal/herdr-desktop-wsl/) in WSL:
 
-Writing the same `sandbox.filesystem.allowWrite` entries into every project's `.claude/settings.json` gets old fast. `claudelator` lets you keep those entries in reusable preset files and merge them into your global or per-project settings idempotently.
+- `claudelator apply` adds one bundled sandbox preset (filesystem write access and network domains for common toolchains) to Claude Code `settings.json`.
+- `claudelator herdr` connects Herdr Desktop on Windows to `herdr-core` in WSL.
 
 ## Install
 
