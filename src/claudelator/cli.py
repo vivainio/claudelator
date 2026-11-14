@@ -9,6 +9,7 @@ from datetime import date
 from importlib.resources import files
 from pathlib import Path
 
+from .herdr import cmd_herdr
 from .merge import merge
 
 USER_PRESET_DIR = Path(os.environ.get("XDG_CONFIG_HOME", Path.home() / ".config")) / "claudelator" / "presets"
@@ -183,6 +184,14 @@ def main(argv=None):
     sp.add_argument("--dry-run", action="store_true")
     add_scope(sp)
     sp.set_defaults(func=cmd_sandbox)
+
+    sp = sub.add_parser("herdr", help="set up Herdr Desktop (Windows) -> herdr-core in WSL over SSH")
+    sp.add_argument("action", nargs="?", choices=["setup", "check"], default="setup")
+    sp.add_argument("--host", default="wsl", help="ssh host alias to create (default: wsl)")
+    sp.add_argument("--port", type=int, default=22)
+    sp.add_argument("--lock-down", action="store_true", help="disable SSH password login (after testing key login)")
+    sp.add_argument("--dry-run", action="store_true")
+    sp.set_defaults(func=cmd_herdr)
 
     args = p.parse_args(argv)
     args.func(args)
